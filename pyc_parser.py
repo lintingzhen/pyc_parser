@@ -6,6 +6,7 @@
 import sys
 import time
 from lxml import etree
+import opcode
 
 
 def r_long(f):
@@ -120,10 +121,35 @@ def r_long_object(f):
     return etree.Element("long", value=str(r_long(f)))
 
 
+def r_code_list(data, parent):
+    size = len(data)
+    i = 0
+    while i < size:
+        instruction = data[i]
+        p = i
+        op = opcode.opname[instruction]
+        if instruction >= opcode.HAVE_ARGUMENT:
+            arg = data[i + 1] + (data[i + 2] << 8)
+            ins_p = "{:>3d} {} {}".format(p, op, arg)
+            i += 3
+        else:
+            ins_p = "{:>3d} {}".format(p, op)
+            i += 1
+        parent.append(etree.Element("ins", value=ins_p))
+
+
 def r_code_object(f):
     def r_long_element(f, tag):
         v = r_long(f)
         return etree.Element(tag, value="{}".format(v))
+
+    def r_code_code_object(f):
+        e = etree.Element("code")
+        length = r_long(f)
+        data = bytearray(f.read(length))
+        e.append(etree.Element("raw", value="".join(["\\x{:02x}".format(c) for c in data])))
+        r_code_list(data, e)
+        return e
 
     def sr_str_object(f, tag=None, binary=False):
         t = f.read(1)
@@ -146,7 +172,8 @@ def r_code_object(f):
     code.append(r_long_element(f, "stackSize"))
     code.append(r_long_element(f, "flags"))
 
-    code.append(sr_str_object(f, "code", True))
+    assert f.read(1) == 's'
+    code.append(r_code_code_object(f))
 
     assert f.read(1) == '('
     code.append(r_tuple_object(f, "consts"))
@@ -212,7 +239,7 @@ def main(argv):
     else:
         pyc_file = "demo.pyc"
 
-    xml_file = "r.xml"
+    xml_file = "{}.xml".format(pyc_file[:pyc_file.rfind('.')])
 
     root = etree.Element("PycFile")
     with open(pyc_file, "rb") as f:
