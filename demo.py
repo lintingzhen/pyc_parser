@@ -3,11 +3,17 @@
 # Create Date: 2018-10-19 10:39
 # Author: Airlam
 
+
 class A:
     pass
 
-def Func():
-    pass
+
+def f(t):
+    if t:
+        return 3
+    else:
+        return 4
+
 
 a = A()
-Func()
+f(0)

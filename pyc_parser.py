@@ -147,8 +147,10 @@ def r_code_object(f):
         e = etree.Element("code")
         length = r_long(f)
         data = bytearray(f.read(length))
-        e.append(etree.Element("raw", value="".join(["\\x{:02x}".format(c) for c in data])))
-        r_code_list(data, e)
+        e.append(etree.Element("raw", length=str(length), value="".join(["\\x{:02x}".format(c) for c in data])))
+        ins_list = etree.Element("insList")
+        e.append(ins_list)
+        r_code_list(data, ins_list)
         return e
 
     def sr_str_object(f, tag=None, binary=False):
@@ -245,7 +247,7 @@ def main(argv):
     with open(pyc_file, "rb") as f:
         root.set("magic", r_magic(f))
         root.set("time", r_time(f))
-        f.read(1)
+        assert f.read(1) == 'c'
         root.append(r_code_object(f))
 
     with open(xml_file, "w+") as of:

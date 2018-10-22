@@ -1,6 +1,6 @@
 最近看陈儒的《Python源码剖析》一书，其中讲解pyc文件结构时，提到解析工具pycparser，网上没找到源码，所以自己动手写一个。
 
-**!目前仅针对python2.5版本的pyc格式**
+**! 目前仅针对python版本区间[2.5, 2.7.12]内的pyc格式**
 
 files:
 - demo.py是示例脚本。
@@ -23,7 +23,27 @@ $ python pyc_parser.py demo.pyc
     <stackSize value="3"/>
     <flags value="64"/>
     <code>
-      <str length="48" value="\x64\x00\x00\x64\x04\x00\x64\x01\x00\x84\x00\x00\x83\x00\x00\x59\x5a\x00\x00\x64\x02\x00\x84\x00\x00\x5a\x01\x00\x65\x00\x00\x83\x00\x00\x5a\x02\x00\x65\x01\x00\x83\x00\x00\x01\x64\x03\x00\x53"/>
+      <raw length="48" value="\x64\x00\x00\x64\x04\x00\x64\x01\x00\x84\x00\x00\x83\x00\x00\x59\x5a\x00\x00\x64\x02\x00\x84\x00\x00\x5a\x01\x00\x65\x00\x00\x83\x00\x00\x5a\x02\x00\x65\x01\x00\x83\x00\x00\x01\x64\x03\x00\x53"/>
+      <insList>
+        <ins value="  0 LOAD_CONST 0"/>
+        <ins value="  3 LOAD_CONST 4"/>
+        <ins value="  6 LOAD_CONST 1"/>
+        <ins value="  9 MAKE_FUNCTION 0"/>
+        <ins value=" 12 CALL_FUNCTION 0"/>
+        <ins value=" 15 BUILD_CLASS"/>
+        <ins value=" 16 STORE_NAME 0"/>
+        <ins value=" 19 LOAD_CONST 2"/>
+        <ins value=" 22 MAKE_FUNCTION 0"/>
+        <ins value=" 25 STORE_NAME 1"/>
+        <ins value=" 28 LOAD_NAME 0"/>
+        <ins value=" 31 CALL_FUNCTION 0"/>
+        <ins value=" 34 STORE_NAME 2"/>
+        <ins value=" 37 LOAD_NAME 1"/>
+        <ins value=" 40 CALL_FUNCTION 0"/>
+        <ins value=" 43 POP_TOP"/>
+        <ins value=" 44 LOAD_CONST 3"/>
+        <ins value=" 47 RETURN_VALUE"/>
+      </insList>
     </code>
     <consts>
       <internStr index="0" length="1" value="A"/>
@@ -33,7 +53,13 @@ $ python pyc_parser.py demo.pyc
         <stackSize value="1"/>
         <flags value="66"/>
         <code>
-          <str length="8" value="\x65\x00\x00\x5a\x01\x00\x52\x53"/>
+          <raw length="8" value="\x65\x00\x00\x5a\x01\x00\x52\x53"/>
+          <insList>
+            <ins value="  0 LOAD_NAME 0"/>
+            <ins value="  3 STORE_NAME 1"/>
+            <ins value="  6 LOAD_LOCALS"/>
+            <ins value="  7 RETURN_VALUE"/>
+          </insList>
         </code>
         <consts/>
         <names>
@@ -60,7 +86,11 @@ $ python pyc_parser.py demo.pyc
         <stackSize value="1"/>
         <flags value="67"/>
         <code>
-          <str length="4" value="\x64\x00\x00\x53"/>
+          <raw length="4" value="\x64\x00\x00\x53"/>
+          <insList>
+            <ins value="  0 LOAD_CONST 0"/>
+            <ins value="  3 RETURN_VALUE"/>
+          </insList>
         </code>
         <consts>
           <NoneObject/>
