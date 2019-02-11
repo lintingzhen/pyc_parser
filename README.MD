@@ -1,6 +1,7 @@
 最近看陈儒的《Python源码剖析》一书，其中讲解pyc文件结构时，提到解析工具pycparser，网上没找到源码，所以自己动手写一个。
 
-**! 目前仅针对python版本区间[2.5, 2.7.12]内的pyc格式**
+**! 目前仅针对python版本区间[2.5]内的pyc格式**
+若需要解析其他版本pyc，需找出编译pyc文件的python版本对应的CPython源码中的Include/opcode.h文件，转成类似opcode_2_5.py文件，再进行解析
 
 files:
 - demo.py是示例脚本。

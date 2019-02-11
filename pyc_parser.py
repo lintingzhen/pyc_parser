@@ -6,7 +6,7 @@
 import sys
 import time
 from lxml import etree
-import opcode
+import opcode_2_5 as opcode
 
 
 def r_long(f):
